@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<title>Notas</title>
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="language" content="es">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animate.css">
+<link rel="stylesheet" href="style.css">
+<link href='http://fonts.googleapis.com/css?family=Capriola' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+	<div class="menu">
+		<h1>Tareas Pad</h1>
+		<div class="line1"></div>
+		<div class="line2"></div>
+		<button id="new" onclick="caja()"><span class="icon-plus"></span></button>
+		<button id="info" onclick="menu()" type="submit"><span class="icon-info"></span></button>
+		<div id="informacion" style="visibility: hidden;">
+			<h3>Añadir una tarea</h3>
+			<p>Para añadir una tarea presiona el botón de "+" y automáticamente se creará una tarea nueva en el área de "Me falta".</p>
+			<h3>Editar una tarea</h3>
+			<p>Para editar tu tarea da click al texto que dice "Inserta tu tarea.", borra ese texto e inserta tu nueva tarea o edita la que ya tienes puesta.</p>
+			<footer>
+				&copy; Derechos Reservados <br> Andrea Muñoz Liy
+			</footer>
+		</div>
+	</div>
+	<div class="contenedor">
+		<div ondrop="drop(event)" ondragover="allowDrop(event)" class="izq" id="droparea1">
+			<header draggable="false"><span class="icon-sad2 animated infinite swing"></span> ME FALTA </header>
+			<div id="drag1" class="nota" draggable="true" ondragstart="drag(event)" name="notita">
+				Tarea <a class="close" onclick="this.parentNode.setAttribute('class', 'nota animated jello'); this.parentNode.style.display = 'none';">&times;</a>
+				<textarea draggable="false" class="texto" rows="5">Inserta tu tarea.</textarea>
+			</div>
+		</div>
+		<div ondrop="drop(event)" ondragover="allowDrop(event)" class="centro" id="droparea2" onload="scroll()">
+			<header draggable="false"><span class="icon-spinner animated infinite rotateIn"></span> YA CASI </header>
+			<div id="drag2" class="nota" draggable="true" ondragstart="drag(event)" name="notita">
+				Tarea <a class="close" onclick="this.parentNode.style.display = 'none';">&times;</a>
+				<textarea draggable="false" class="texto" rows="5">Inserta tu tarea.</textarea>
+			</div>
+		</div>
+		<div ondrop="drop(event)" ondragover="allowDrop(event)" class="der" id="droparea3">
+			<header draggable="false"><span class="icon-happy2 animated infinite jello"></span> ¡LISTO!</header>
+			<div id="drag3" class="nota" draggable="true" ondragstart="drag(event)" name="notita">
+				Tarea <a class="close" onclick="this.parentNode.style.display = 'none';">&times;</a>
+				<textarea draggable="false" class="texto" rows="5">Inserta tu tarea.</textarea>
+			</div>
+		</div>
+		
+
+	</div>
+</body>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script>
+window.allowDrop = function(ev) {
+    ev.preventDefault();
+    if (ev.target.getAttribute("draggable") == "true")
+        ev.dataTransfer.dropEffect = "none"; 
+    else if (ev.target.getAttribute("draggable") == "false")
+        ev.dataTransfer.dropEffect = "none"; 
+    else
+        ev.dataTransfer.dropEffect = "all";
+};
+
+window.drag = function(ev) {
+    ev.dataTransfer.setData("id", ev.target.id);
+};
+
+window.drop = function(ev) {
+    ev.preventDefault();
+    var id = ev.dataTransfer.getData("id");
+    var dragged = document.getElementById(id);
+    ev.target.appendChild(dragged);
+    dragged.className += " dropped";
+};
+
+function caja() {
+	var nota = document.createElement("div");
+	nota.className ="nota";
+	var text = document.createElement("textarea");
+	text.className = "texto";
+	text.setAttribute('rows', 5);
+	text.setAttribute('draggable', false);
+	var tarea = document.createTextNode("Tarea");
+	var equis = document.createElement("a");
+	var x = document.createTextNode('\xD7');
+	equis.appendChild(x);
+	equis.className= "close";
+	equis.setAttribute("onclick", "this.parentNode.style.display = 'none';");
+	var texto = document.createTextNode("Inserta tu tarea.");
+	text.appendChild(texto);
+	nota.appendChild(tarea);
+	nota.appendChild(equis);
+	nota.appendChild(text);
+	nota.setAttribute('draggable', true);
+	nota.setAttribute('ondragstart', 'drag(event)');
+	nota.setAttribute('name', 'notita');
+	area = document.getElementById("droparea1");
+	area.appendChild(nota);
+	area.scrollTop = area.scrollHeight;
+	var myid = "drag";
+	for (var i = 0; i <= 20; i++) {
+	    document.getElementsByName('notita')[i].setAttribute('id', myid + (i + 1));
+	}
+};
+function menu(){
+	var cuadro = document.getElementById("informacion");
+
+	if (cuadro.style.visibility == "visible"){
+		cuadro.setAttribute('class', 'info animated slideOutLeft');	
+		cuadro.style.visibility ="hidden";
+	}
+	else if (cuadro.style.visibility == "hidden"){
+		cuadro.removeAttribute('class', 'animated slideOutLeft');
+		cuadro.setAttribute('class', 'info animated slideInLeft');
+		cuadro.style.visibility ="visible";	
+	};
+};
+animationHover('#new', 'rubberBand');
+animationHover('#info', 'rubberBand');
+
+function animationHover(element, animation){
+  element = $(element);
+  element.hover(
+    function() {
+      element.addClass('animated ' + animation);
+    },
+    function(){
+      //wait for animation to finish before removing classes
+      window.setTimeout( function(){
+        element.removeClass('animated ' + animation);
+      }, 1000);
+    }
+  );
+};
+animationClick('#new', 'swing');
+animationClick('#info', 'swing');
+function animationClick(element, animation){
+  element = $(element);
+  element.click(
+    function() {
+      element.addClass('animated ' + animation);
+      //wait for animation to finish before removing classes
+      window.setTimeout( function(){
+          element.removeClass('animated ' + animation);
+      }, 2000);
+    }
+  );
+};
+</script>
+</html>
